@@ -156,3 +156,11 @@ async def get_goals():
 async def ask_question(body: AskRequest):
     answer = await ask_ai(body.question)
     return {"answer": answer}
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "ok",
+        "timestamp": datetime.now().isoformat(),
+        "uptime": time.monotonic() - START_TIME
+    }
