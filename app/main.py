@@ -1,6 +1,7 @@
 import random
 from datetime import datetime, timedelta
 from pathlib import Path
+import time
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -13,6 +14,8 @@ from app.data import (
     PROFILE, SKILLS, EXPERIENCE, EDUCATION, PROJECTS,
     SOCIAL_LINKS, QUOTES, GOALS, COMMANDS_HELP
 )
+
+START_TIME = time.monotonic()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
