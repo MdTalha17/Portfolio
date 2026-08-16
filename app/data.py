@@ -66,20 +66,7 @@ PROJECTS = [
         "stars": 0,
         "url": "https://github.com/MdTalha17/snapshare"
     },
-    {
-        "name": "OsdagBridge",
-        "description": "Unified bridge analysis & design module for Osdag.",
-        "language": "Python",
-        "stars": 0,
-        "url": "https://github.com/MdTalha17/OsdagBridge"
-    },
-    {
-        "name": "3d-Bridge-CAD",
-        "description": "Parametric 3D CAD bridge modeling toolkit using pythonOCC.",
-        "language": "Python",
-        "stars": 0,
-        "url": "https://github.com/MdTalha17/3d-Bridge-CAD"
-    },
+
     {
         "name": "LangGraph-Multitool-Chatbot",
         "description": "Multi-tool chatbot powered by LangGraph agents.",
@@ -129,13 +116,7 @@ PROJECTS = [
         "stars": 0,
         "url": "https://github.com/MdTalha17/Movie-Recommender"
     },
-    {
-        "name": "Face-Recognition-Attendance",
-        "description": "Face recognition based attendance system using OpenCV.",
-        "language": "Python",
-        "stars": 0,
-        "url": "https://github.com/MdTalha17/Face-Recognition-Attendance-System"
-    },
+
     {
         "name": "Retro-Snake-Game",
         "description": "Classic retro snake game.",
