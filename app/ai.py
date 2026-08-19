@@ -7,11 +7,11 @@ load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-MODEL_NAME = "llama-3.3-70b-versatile"
+MODELS_TO_TRY = ["groq/compound-mini", "openai/gpt-oss-20b", "qwen/qwen3.6-27b", "groq/compound"]
 
 def build_system_prompt() -> str:
     skills_text = "\n".join([f"  - {cat}: {', '.join(items)}" for cat, items in SKILLS.items()])
-    exp_text = "\n".join([f"  - {e['title']} @ {e['company']}: {e['description']}" for e in EXPERIENCE])
+    exp_text = "\n".join([f"  - {e['title']} @ {e['company']}: {' '.join(e.get('bullets', [e.get('description', '')]))}" for e in EXPERIENCE])
     edu_text = "\n".join([f"  - {e['degree']} at {e['institution']} ({e['duration']})" for e in EDUCATION])
     proj_text = "\n".join([f"  - {p['name']} ({p.get('language', 'N/A')}): {p['description']} ({p['url']})" for p in PROJECTS])
     goals_text = "\n".join([f"  - {g}" for g in GOALS])
@@ -52,7 +52,7 @@ Instructions:
 """
 
 async def ask_ai(question: str) -> str:
-    api_key = os.getenv("GROQ_API_KEY", "")
+    api_key = os.getenv("GROQ_API_KEY", "").strip()
     
     if not api_key:
         return (
@@ -63,34 +63,39 @@ async def ask_ai(question: str) -> str:
         )
     
     system_prompt = build_system_prompt()
-    
-    payload = {
-        "model": MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": question}
-        ],
-        "temperature": 0.5,
-        "max_tokens": 350
-    }
-    
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
     
     async with httpx.AsyncClient(timeout=15.0) as client:
-        try:
-            resp = await client.post(GROQ_API_URL, json=payload, headers=headers)
-            if resp.status_code == 200:
-                data = resp.json()
-                answer = data["choices"][0]["message"]["content"].strip()
-                return answer
-            elif resp.status_code == 401:
-                return "🤖 Error: Invalid GROQ_API_KEY provided in .env file."
-            else:
-                return f"🤖 Groq API returned status {resp.status_code}: {resp.text[:150]}"
-        except httpx.TimeoutException:
-            return "🤖 AI Assistant timed out while connecting to Groq. Please try again."
-        except Exception as e:
-            return f"🤖 AI Assistant Error: {str(e)}"
+        last_error = ""
+        for model in MODELS_TO_TRY:
+            payload = {
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": question}
+                ],
+                "temperature": 0.5,
+                "max_tokens": 250
+            }
+            try:
+                resp = await client.post(GROQ_API_URL, json=payload, headers=headers)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    answer = data["choices"][0]["message"]["content"].strip()
+                    if "</Think>" in answer:
+                        answer = answer.split("</Think>")[-1].strip()
+                    return answer
+                elif resp.status_code == 401:
+                    return "🤖 Error: Invalid GROQ_API_KEY provided in .env file."
+                else:
+                    last_error = f"Status {resp.status_code}: {resp.text[:150]}"
+            except httpx.TimeoutException:
+                last_error = "Timeout connecting to Groq"
+            except Exception as e:
+                last_error = str(e)
+                
+        return f"🤖 AI Assistant Error: {last_error}"
+

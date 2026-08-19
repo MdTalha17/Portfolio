@@ -44,6 +44,13 @@ export function clearTerminal() {
     hintLine.innerHTML = `<span>Type <span class="highlight">'help'</span> for commands, or ask any question to the <span class="cyber-accent">AI Assistant</span>.</span>`;
     terminalOutput.appendChild(hintLine);
     terminalOutput.appendChild(document.createElement('br'));
+    // Note: createInputLine() is called by the command dispatcher after clear returns
+}
+
+// Used after boot/reboot where there is no command dispatcher to re-add the input line
+function clearTerminalAndReset() {
+    clearTerminal();
+    createInputLine();
 }
 
 window.getUsername = getUsername;
@@ -51,6 +58,8 @@ window.setUsername = setUsername;
 window.printToTerminal = printToTerminal;
 window.printHtmlToTerminal = printHtmlToTerminal;
 window.clearTerminal = clearTerminal;
+window.clearTerminalAndReset = clearTerminalAndReset;
+window.createInputLine = createInputLine;
 
 function scrollToBottom() {
     requestAnimationFrame(() => {
@@ -123,6 +132,8 @@ function handleInputKeyDown(e) {
 
         const result = handleCommand(cmd);
         Promise.resolve(result).then(() => {
+            // Skip if a power animation took over (shutdown/reboot) — it will restore the input line
+            if (isPowerAnimating) return;
             createInputLine();
         });
 
@@ -248,8 +259,8 @@ function initHeader() {
 
     // Theme Toggle
     const themeToggle = document.getElementById('theme-toggle');
-    const themes = ['', 'theme-matrix', 'theme-dracula', 'theme-monokai'];
-    const themeNames = ['cyberpunk', 'matrix', 'dracula', 'monokai'];
+    const themes = ['', 'theme-dracula'];
+    const themeNames = ['cyberpunk', 'dracula'];
     let currentThemeIdx = 0;
 
     const savedTheme = localStorage.getItem('terminal-theme');
@@ -517,13 +528,17 @@ async function streamLogs(container, logs, onComplete) {
     if (onComplete) onComplete();
 }
 
-window.triggerShutdown = function() {
+window.triggerShutdown = function(afterShutdownCallback) {
     if (isPowerAnimating) return;
     isPowerAnimating = true;
+    window.isPowerAnimating = true;
 
     const overlay = document.getElementById('power-overlay');
     const content = document.getElementById('power-screen-content');
     if (!overlay || !content) return;
+
+    // Clear the terminal immediately before the overlay appears
+    if (terminalOutput) terminalOutput.innerHTML = '';
 
     content.classList.remove('suspended-mode');
     content.innerHTML = '';
@@ -534,7 +549,13 @@ window.triggerShutdown = function() {
 
     setTimeout(() => {
         streamLogs(content, SHUTDOWN_LOGS, () => {
-            setTimeout(showSuspendedScreen, 500);
+            if (afterShutdownCallback) {
+                // Reboot mode: skip suspended screen, run callback directly
+                setTimeout(afterShutdownCallback, 400);
+            } else {
+                // Normal shutdown: show suspended screen with power button
+                setTimeout(showSuspendedScreen, 500);
+            }
         });
     }, 300);
 };
@@ -574,11 +595,6 @@ window.triggerBootSequence = function(callback) {
     if (!overlay || !content) return;
 
     content.classList.remove('suspended-mode');
-    overlay.classList.remove('hidden');
-    requestAnimationFrame(() => {
-        overlay.classList.add('active');
-    });
-
     content.innerHTML = '';
 
     setTimeout(() => {
@@ -604,6 +620,9 @@ window.triggerBootSequence = function(callback) {
                     content.innerHTML = '';
                     content.classList.remove('suspended-mode');
                     isPowerAnimating = false;
+                    window.isPowerAnimating = false;
+                    // Restore hint line + input line (terminal was cleared before shutdown)
+                    if (window.clearTerminalAndReset) window.clearTerminalAndReset();
                     if (callback) callback();
                 }, 500);
             }, 2400);
@@ -612,10 +631,10 @@ window.triggerBootSequence = function(callback) {
 };
 
 window.triggerReboot = function() {
-    window.triggerShutdown();
-    setTimeout(() => {
+    // Pass triggerBootSequence directly as the afterShutdown callback — skips suspended screen
+    window.triggerShutdown(() => {
         window.triggerBootSequence();
-    }, 6000);
+    });
 };
 
 if (document.readyState === 'loading') {

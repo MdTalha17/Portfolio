@@ -31,22 +31,22 @@ EXPERIENCE = [
     {
         "title": "Software Engineering Intern",
         "company": "FOSSEE, IIT Bombay (Osdag team)",
-        "description": """
-        1. Enabled bridge designs to scale across any girder-pair count by refactoring cross-bracing key-lookup logic.
-        2. Automated material take-off reporting by building a standalone Bill of Quantities generator module.
-        3. Improved 3D CAD viewer usability by adding a dimensions overlay, fit-to-screen on resize, and a toggle-state bug fix.
-        4. Predicted 7 bridge design parameters by training and benchmarking 4 regression models via R2 score.
-        """
+        "bullets": [
+            "Enabled bridge designs to scale across any girder-pair count by refactoring cross-bracing key-lookup logic.",
+            "Automated material take-off reporting by building a standalone Bill of Quantities generator module.",
+            "Improved 3D CAD viewer usability by adding a dimensions overlay, fit-to-screen on resize, and a toggle-state bug fix.",
+            "Predicted 7 bridge design parameters by training and benchmarking 4 regression models via R2 score."
+        ]
     },
     {
         "title": "AI/ML Engineer Intern",
         "company": "Oil and Natural Gas Corporation (ONGC)",
-        "description": """
-        1. Automated document review by building a Flask-based pipeline for multi-PDF batch summarization.
-        2. Extracted structured text from unstructured PDF reports at scale by integrating PyPDF2 for multi-page parsing.
-        3. Generated context-aware summaries by serving LLaMA-2 locally via Ollama with a streaming inference API.
-        4. Improved reviewer usability by building a web UI with batch upload, live status, and summary download.
-        """
+        "bullets": [
+            "Automated document review by building a Flask-based pipeline for multi-PDF batch summarization.",
+            "Extracted structured text from unstructured PDF reports at scale by integrating PyPDF2 for multi-page parsing.",
+            "Generated context-aware summaries by serving LLaMA-2 locally via Ollama with a streaming inference API.",
+            "Improved reviewer usability by building a web UI with batch upload, live status, and summary download."
+        ]
     }
 ]
 
@@ -163,7 +163,7 @@ COMMANDS_HELP = {
     "social": "Show social media links",
     "github": "Live GitHub profile stats",
     "neofetch": "System-info style display",
-    "theme": "Switch theme (cyberpunk/matrix/dracula/monokai)",
+    "theme": "Switch theme (cyberpunk/dracula)",
     "matrix": "Toggle matrix rain background effect",
     "quote": "Display a random developer quote",
     "goals": "Show current goals & aspirations",
@@ -178,6 +178,5 @@ COMMANDS_HELP = {
     "history": "Show command history",
     "shutdown": "Run system shutdown sequence & sleep mode",
     "reboot": "Reboot system and run boot sequence",
-    "boot": "Run system boot / resume animation sequence",
-    "clear": "Clear the terminal screen"
+    "clear/cls": "Clear the terminal screen"
 }

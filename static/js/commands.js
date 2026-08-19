@@ -77,8 +77,9 @@ export const commandHandlers = {
         // If a specific command was requested: help <command>
         if (args && args.length > 0) {
             const target = args[0].toLowerCase();
-            if (cmds[target]) {
-                printHtmlToTerminal(`<pre><span class="cyber-primary">${target}</span> <span class="cyber-dim">-</span> ${esc(cmds[target])}</pre>`);
+            const matchKey = Object.keys(cmds).find(k => k.toLowerCase() === target || k.toLowerCase().split('/').includes(target));
+            if (matchKey) {
+                printHtmlToTerminal(`<pre><span class="cyber-primary">${matchKey}</span> <span class="cyber-dim">-</span> ${esc(cmds[matchKey])}</pre>`);
             } else {
                 printHtmlToTerminal(`<pre><span class="cyber-red">No help available for: ${esc(target)}</span></pre>`);
             }
@@ -168,8 +169,12 @@ export const commandHandlers = {
         html += `<span class="cyber-dim">────────────────────────────────────────</span>\n\n`;
         exp.forEach(e => {
             html += `<span class="cyber-primary">▸ ${esc(e.title)}</span> <span class="cyber-dim">@</span> <span class="cyber-secondary">${esc(e.company)}</span>\n`;
-            if (e.description) {
-                html += `  ${esc(e.description)}\n`;
+            if (e.bullets && e.bullets.length > 0) {
+                e.bullets.forEach(b => {
+                    html += `  <span class="cyber-primary">•</span> ${esc(b)}\n`;
+                });
+            } else if (e.description) {
+                html += `  ${esc(e.description.trim())}\n`;
             }
             html += `\n`;
         });
@@ -249,7 +254,7 @@ export const commandHandlers = {
     },
 
     'theme': async (args) => {
-        const validThemes = ['cyberpunk', 'matrix', 'dracula', 'monokai'];
+        const validThemes = ['cyberpunk', 'dracula'];
         if (!args || args.length === 0) {
             let html = `<pre><span class="cyber-accent">Available Themes:</span>\n\n`;
             validThemes.forEach(t => {
@@ -282,6 +287,8 @@ export const commandHandlers = {
     'clear': async () => {
         clearTerminal();
     },
+
+    'cls': async () => commandHandlers['clear'](),
 
     'date': async () => {
         printHtmlToTerminal(`<pre>${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</pre>`);
@@ -384,10 +391,6 @@ export const commandHandlers = {
 
     'restart': async () => commandHandlers['reboot'](),
 
-    'boot': async () => {
-        printHtmlToTerminal(`<pre><span class="cyber-primary">Running boot sequence...</span></pre>`);
-        if (window.triggerBootSequence) window.triggerBootSequence();
-    },
 
     '': async () => { }
 };

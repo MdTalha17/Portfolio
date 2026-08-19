@@ -180,7 +180,15 @@
                         {% for exp in experience %}
                         <div class="gui-timeline-item">
                             <h3 class="gui-item-title">{{ exp.title }} <span class="gui-company">@ {{ exp.company }}</span></h3>
+                            {% if exp.bullets %}
+                            <ul class="gui-bullets-list">
+                                {% for bullet in exp.bullets %}
+                                <li>{{ bullet }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
                             <p class="gui-item-desc">{{ exp.description }}</p>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
