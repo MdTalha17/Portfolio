@@ -926,25 +926,270 @@ a:hover {
 }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE — Tablet & Mobile
    ============================================ */
-@media (max-width: 768px) {
-    body { font-size: 12px; }
-    main { padding: 16px 12px 60px 12px; }
-    .header-container { padding: 6px 10px; }
-    .header-center a { font-size: 0.75rem; }
-    .ascii-banner { font-size: 8px; }
-    .gui-card { padding: 16px; }
-}
 
-@media (max-width: 480px) {
-    .header-center { gap: 10px; }
-    .ascii-banner { font-size: 5px; }
-    .neofetch-container {
-        flex-direction: column;
+/* ---- Tablet (≤ 768px) ---- */
+@media (max-width: 768px) {
+    body {
+        font-size: 13px;
+    }
+
+    /* Header */
+    .header-container {
+        padding: 6px 12px;
+        gap: 8px;
+    }
+
+    .header-info {
+        display: none; /* hide weather/clock to save space */
+    }
+
+    .header-center {
         gap: 10px;
     }
-    .gui-nav { gap: 6px; }
-    .gui-tab-btn { padding: 4px 8px; font-size: 0.8rem; }
+
+    /* Main terminal area */
+    main {
+        padding: 14px 14px 56px 14px;
+    }
+
+    /* ASCII banner — scale down gracefully */
+    .ascii-banner {
+        font-size: 7px;
+        line-height: 1.2;
+        overflow-x: auto;
+    }
+
+    /* Terminal text */
+    .terminal-output-line pre,
+    .command-input {
+        font-size: 13px;
+    }
+
+    /* Input line */
+    .input-line {
+        flex-wrap: wrap;
+        margin-top: 14px;
+    }
+
+    /* Neofetch side-by-side → stacked */
+    .neofetch-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* GUI card */
+    .gui-container {
+        padding: 20px 12px 60px 12px;
+    }
+
+    .gui-card {
+        padding: 18px 16px;
+        border-radius: 6px;
+    }
+
+    .gui-title {
+        font-size: 1.5rem;
+    }
+
+    .gui-nav {
+        gap: 6px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .gui-tab-btn {
+        white-space: nowrap;
+        font-size: 0.85rem;
+        padding: 5px 10px;
+    }
+
+    /* Projects grid — 1 column on tablet */
+    .gui-projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Meta box — 1 column */
+    .gui-meta-box {
+        grid-template-columns: 1fr;
+    }
+
+    /* Contact buttons full width */
+    .gui-contact-actions {
+        flex-direction: column;
+    }
+
+    .gui-btn {
+        text-align: center;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 5px 12px;
+    }
 }
 
+/* ---- Mobile (≤ 480px) ---- */
+@media (max-width: 480px) {
+    body {
+        font-size: 12px;
+    }
+
+    /* Header — tighten up */
+    .header-container {
+        padding: 5px 10px;
+    }
+
+    .header-left {
+        gap: 8px;
+    }
+
+    .header-center {
+        gap: 8px;
+    }
+
+    .header-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* ASCII banner — very small on phones, scrollable */
+    .ascii-banner {
+        font-size: 5px;
+        line-height: 1.15;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Make banner scrollable without page scroll */
+    .ascii-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 8px;
+    }
+
+    /* Terminal text */
+    .terminal-output-line pre,
+    .command-input {
+        font-size: 12px;
+    }
+
+    /* Prompt — prevent overflow */
+    .prompt {
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    /* Main area */
+    main {
+        padding: 10px 10px 52px 10px;
+    }
+
+    /* GUI */
+    .gui-container {
+        padding: 12px 8px 56px 8px;
+    }
+
+    .gui-card {
+        padding: 14px 12px;
+        border-radius: 4px;
+    }
+
+    .gui-title {
+        font-size: 1.3rem;
+    }
+
+    .gui-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .gui-bio {
+        font-size: 0.88rem;
+    }
+
+    /* Nav tabs scroll horizontally */
+    .gui-nav {
+        gap: 4px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 8px;
+    }
+
+    .gui-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .gui-tab-btn {
+        font-size: 0.78rem;
+        padding: 4px 8px;
+        white-space: nowrap;
+    }
+
+    /* Timeline */
+    .gui-timeline-item {
+        padding-left: 14px;
+    }
+
+    .gui-item-title {
+        font-size: 1rem;
+    }
+
+    /* Skills badges wrap fine — just reduce gap */
+    .gui-badges-list {
+        gap: 6px;
+    }
+
+    .gui-skill-badge {
+        font-size: 0.78rem;
+        padding: 3px 8px;
+    }
+
+    /* Project cards */
+    .gui-project-card {
+        padding: 12px;
+    }
+
+    .gui-project-title {
+        font-size: 0.95rem;
+    }
+
+    /* Power overlay log font */
+    .power-log-line {
+        font-size: 11px;
+    }
+
+    .power-screen-content {
+        max-width: 100%;
+    }
+
+    /* Footer compact */
+    .footer .copyright {
+        font-size: 0.7rem;
+    }
+
+    /* Fullscreen toggle — hide on mobile (no real fullscreen API support) */
+    .fullscreen-toggle {
+        display: none;
+    }
+}
+
+/* ---- Very small screens (≤ 360px) ---- */
+@media (max-width: 360px) {
+    .ascii-banner {
+        font-size: 4px;
+    }
+
+    .gui-card {
+        padding: 10px;
+    }
+
+    .header-mode-btn {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+}
